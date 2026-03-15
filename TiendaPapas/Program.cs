@@ -1,4 +1,7 @@
-﻿using System;
+﻿using CsvHelper;
+using System.Globalization;
+using System.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,6 +15,12 @@ namespace TiendaPapas
 
         static void Main()
         {
+            // Carga los datos apenas abre el programa
+            CargarProductos();
+            CargarSedes();
+            CargarCarta();
+
+
             while (true)
             {
                 Console.WriteLine("\n--- Administrador TiendaPapas ---");
@@ -70,6 +79,7 @@ namespace TiendaPapas
             var ubic = Console.ReadLine();
             sedes.Add(new Sede(nombre, ubic));
             Console.WriteLine("Sede creada.");
+            GuardarSedes();
         }
 
         static void ListarSedes()
@@ -173,6 +183,7 @@ namespace TiendaPapas
 
             s.AgregarEmpleado(nuevo);
             Console.WriteLine("Empleado agregado.");
+            GuardarSedes();
         }
 
         static void ListarEmpleadosPorSede()
@@ -226,6 +237,8 @@ namespace TiendaPapas
             }
 
             Console.WriteLine("Empleado actualizado.");
+            GuardarSedes();
+
         }
 
         static void EliminarEmpleado()
@@ -236,6 +249,8 @@ namespace TiendaPapas
             if (e == null) { Console.WriteLine("Empleado no encontrado."); return; }
             s.EliminarEmpleado(e);
             Console.WriteLine("Empleado eliminado.");
+            GuardarSedes();
+
         }
         #endregion
 
@@ -273,16 +288,23 @@ namespace TiendaPapas
             Console.Write("Marca: ");
             var marca = Console.ReadLine();
             productos.Add(new Producto(cant, nombre, marca));
-            Console.WriteLine("Producto creado.");
+
+            GuardarProductos();
+            Console.WriteLine("Producto guardado exitosamente.");
         }
 
         static void ListarProductos()
         {
-            if (!productos.Any()) { Console.WriteLine("No hay productos."); return; }
+            if (productos.Count == 0)
+            {
+                Console.WriteLine("No hay productos en la lista.");
+                return;
+            }
+
             for (int i = 0; i < productos.Count; i++)
             {
-                // Las propiedades de Producto no son públicas en el archivo; se muestra el tipo y el índice.
-                Console.WriteLine($"{i}: {productos[i].GetType().Name}");
+                // Esto usa el override ToString que pusiste en Producto.cs
+                Console.WriteLine($"{i}: {productos[i]}");
             }
         }
 
@@ -310,8 +332,16 @@ namespace TiendaPapas
         {
             ListarProductos();
             Console.Write("Índice a eliminar: ");
-            if (!int.TryParse(Console.ReadLine(), out int idx) || idx < 0 || idx >= productos.Count) { Console.WriteLine("Índice inválido."); return; }
+            if (!int.TryParse(Console.ReadLine(), out int idx) || idx < 0 || idx >= productos.Count)
+
+            {
+                Console.WriteLine("Índice inválido.");
+                return;
+
+            }
+
             productos.RemoveAt(idx);
+            GuardarProductos();
             Console.WriteLine("Producto eliminado.");
         }
         #endregion
@@ -357,6 +387,7 @@ namespace TiendaPapas
                 var receta = (Recetas)ctor.Invoke(new object[] { nombre });
                 carta.AgregarPlatillo(receta);
                 Console.WriteLine("Platillo agregado a la carta.");
+                GuardarCarta();
             }
             catch (Exception ex)
             {
@@ -375,6 +406,7 @@ namespace TiendaPapas
                 if (idx < 0 || idx >= carta.Platillos.Count) { Console.WriteLine("Índice fuera de rango."); return; }
                 carta.EliminarPlatillo(carta.Platillos[idx]);
                 Console.WriteLine("Platillo eliminado.");
+                GuardarCarta();
             }
             catch (Exception ex)
             {
@@ -382,7 +414,158 @@ namespace TiendaPapas
             }
         }
         #endregion
-    }
-}
 
-// Actualización de validaciones de rama Samuel
+        // Método para GUARDAR (Escribir en el disco)
+        static void GuardarProductos()
+        {
+            try
+            {
+                using (var writer = new StreamWriter("productos.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(productos);
+                }
+            }
+            catch (Exception ex) { Console.WriteLine($"Error al guardar productos: {ex.Message}"); }
+        }
+
+        static void CargarProductos()
+        {
+            if (!File.Exists("productos.csv")) { productos = new List<Producto>(); return; }
+
+            var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                PrepareHeaderForMatch = args => args.Header.ToLower(),
+                HeaderValidated = null, // ESTO EVITA LA PANTALLA ROJA
+                MissingFieldFound = null // ESTO TAMBIÉN
+            };
+
+            try
+            {
+                using (var reader = new StreamReader("productos.csv"))
+                using (var csv = new CsvReader(reader, config))
+                {
+                    productos = csv.GetRecords<Producto>().ToList();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Archivo de productos dañado. Iniciando lista vacía.");
+                productos = new List<Producto>();
+            }
+        }
+
+
+
+        static void GuardarCarta()
+        {
+            using (var writer = new StreamWriter("carta.csv"))
+            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+            {
+                csv.WriteRecords(carta.Platillos);
+            }
+        }
+
+        static void CargarCarta()
+        {
+            if (File.Exists("carta.csv"))
+            {
+                var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    PrepareHeaderForMatch = args => args.Header.ToLower(),
+                };
+                using (var reader = new StreamReader("carta.csv"))
+                using (var csv = new CsvReader(reader, config))
+                {
+                    var platillosCargados = csv.GetRecords<Recetas>().ToList();
+                    foreach (var p in platillosCargados) carta.AgregarPlatillo(p);
+                }
+            }
+        }
+
+        // --- SEDES Y EMPLEADOS ---
+        static void GuardarSedes()
+        {
+            try
+            {
+                // 1. Guardar Sedes
+                using (var writer = new StreamWriter("sedes.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(sedes);
+                }
+
+                // 2. Guardar Empleados con su Sede vinculada
+                var listaEmpleados = new List<object>();
+                foreach (var s in sedes)
+                {
+                    foreach (var e in s.Empleados)
+                    {
+                        listaEmpleados.Add(new
+                        {
+                            SedeNombre = s.Nombre,
+                            e.Nombre,
+                            e.ID,
+                            Tipo = e.GetType().Name,
+                            Mesa = (e is Mesero m) ? m.MesaAsignada : 0
+                        });
+                    }
+                }
+
+                using (var writer = new StreamWriter("empleados.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(listaEmpleados);
+                }
+            }
+            catch (Exception ex) { Console.WriteLine($"Error al guardar sedes: {ex.Message}"); }
+        }
+
+        static void CargarSedes()
+        {
+            if (!File.Exists("sedes.csv")) { sedes = new List<Sede>(); return; }
+
+            var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                PrepareHeaderForMatch = args => args.Header.ToLower(),
+                HeaderValidated = null,
+                MissingFieldFound = null
+            };
+
+            try
+            {
+                // 1. Cargar Sedes
+                using (var reader = new StreamReader("sedes.csv"))
+                using (var csv = new CsvReader(reader, config))
+                {
+                    sedes = csv.GetRecords<Sede>().ToList();
+                }
+
+                // 2. Cargar Empleados
+                if (File.Exists("empleados.csv"))
+                {
+                    using (var reader = new StreamReader("empleados.csv"))
+                    using (var csv = new CsvReader(reader, config))
+                    {
+                        var registros = csv.GetRecords<dynamic>().ToList();
+                        foreach (var r in registros)
+                        {
+                            var d = (IDictionary<string, object>)r;
+                            string tipo = d["Tipo"].ToString();
+                            string sNombre = d["SedeNombre"].ToString();
+
+                            Empleados nuevo;
+                            if (tipo == "Mesero")
+                                nuevo = new Mesero(d["Nombre"].ToString(), int.Parse(d["ID"].ToString()), int.Parse(d["Mesa"].ToString()));
+                            else
+                                nuevo = new Cocinero(d["Nombre"].ToString(), int.Parse(d["ID"].ToString()));
+
+                            sedes.FirstOrDefault(x => x.Nombre == sNombre)?.AgregarEmpleado(nuevo);
+                        }
+                    }
+                }
+            }
+            catch { sedes = new List<Sede>(); }
+        }
+    }
+    }
