@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TiendaPapas
 {
-    public class Mesero : Empleados
+    public class Mesero : Empleado
     {
         public int MesaAsignada { get; set; }
         public Mesero(string nombre , int id , int MesaAsignada) : base(nombre , id) { 

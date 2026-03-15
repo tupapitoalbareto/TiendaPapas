@@ -6,27 +6,46 @@ namespace TiendaPapas
 {
     public class Recetas
     {
-        List<Producto> Ingredientes { get; set; }
-        string Nombre { get; set; }
+       public List<Producto> Ingredientes { get; set; }
+       public string Nombre { get; set; }
 
-        Recetas(string nombre)
+        public Recetas(string nombre , List<Producto> Ingredientes)
         {
             Nombre = nombre;
+            this.Ingredientes = Ingredientes;
         }
-        public void HacerReceta()
+        
+        public void ObtenerReceta(List<Producto> bodega)
         {
-            for (int i = 0; i < Ingredientes.Count; i++)
+            int contador = 0;
+            for (int j = 0; j < Ingredientes.Count; j++)
             {
-                if (Ingredientes[i] == null )
+                for (int i = 0; i < bodega.Count; i++)
                 {
-                    throw new Exception("el ingrediente no existe");
+                    if (Ingredientes[j].Nombre == bodega[i].Nombre && 
+                        Ingredientes[j].Cantidad <= bodega[i].Cantidad && 
+                        Ingredientes[j].Marca == bodega[i].Marca)
+                    {
+                        contador++;
+                    }
                 }
             }
-            Console.WriteLine($"{Nombre} se ha hecho con los ingredientes:");
-            foreach (var ingrediente in Ingredientes)
+
+            if (contador == Ingredientes.Count )
             {
-                Console.WriteLine(ingrediente);
+                Console.WriteLine($"{Nombre} se ha hecho con los ingredientes:");
+                
             }
+            else
+            {
+                Console.WriteLine($"No se puede hacer {Nombre} con los ingredientes disponibles.");
+                return;
+            }
+            
+        }
+        public override string ToString()
+        {
+            return Nombre ?? base.ToString();
         }
     }
 }

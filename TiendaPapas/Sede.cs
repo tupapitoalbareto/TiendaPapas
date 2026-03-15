@@ -8,19 +8,19 @@ namespace TiendaPapas
     {
         public string Nombre { get; set; }
         public string Ubicacion { get; set; }
-        public List<Empleados> Empleados { get; set; }
+        public List<Empleado> Empleados { get; set; }
 
         public Sede(string nombre, string ubicacion)
         {
             Nombre = nombre;
             Ubicacion = ubicacion;
-            Empleados = new List<Empleados>();
+            Empleados = new List<Empleado>();
         }
-        public void AgregarEmpleado(Empleados empleado)
+        public void AgregarEmpleado(Empleado empleado)
         {
             Empleados.Add(empleado);
         }
-        public void EliminarEmpleado(Empleados empleado)
+        public void EliminarEmpleado(Empleado empleado)
         {
     
                 if (empleado == null)

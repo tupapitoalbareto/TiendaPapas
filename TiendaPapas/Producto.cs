@@ -6,15 +6,19 @@ namespace TiendaPapas
 {
     public class Producto
     {
-        int Cantidad { get; set; }
-        string Nombre { get; set; }
-        string Marca { get; set; }
+        public int Cantidad { get; set; }
+        public string Nombre { get; set; }
+        public string Marca { get; set; }
 
         public Producto(int cantidad, string nombre, string marca)
         {
             Cantidad = cantidad;
             Nombre = nombre;
             Marca = marca;
+        }
+        public override string ToString()
+        {
+            return $"{Nombre} - cantidad: {Cantidad} - marca: {Marca}";
         }
     }
 }
