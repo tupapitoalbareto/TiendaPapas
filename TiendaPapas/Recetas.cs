@@ -22,11 +22,13 @@ namespace TiendaPapas
             {
                 for (int i = 0; i < bodega.Count; i++)
                 {
-                    if (Ingredientes[j].Nombre == bodega[i].Nombre && 
-                        Ingredientes[j].Cantidad <= bodega[i].Cantidad && 
-                        Ingredientes[j].Marca == bodega[i].Marca)
+                    if (Ingredientes[j].Nombre == bodega[i].Nombre &&                       
+                        Ingredientes[j].Marca == bodega[i].Marca && 
+                        Ingredientes[j].Cantidad <= bodega[i].Cantidad)
                     {
-                        contador++;
+                            bodega[i].Cantidad -= Ingredientes[j].Cantidad;
+                            Console.WriteLine($"quedan en bodega {bodega[i].Cantidad} unidades de {bodega[i].Nombre} marca {bodega[i].Marca}");
+                            contador++;
                     }
                 }
             }
@@ -34,12 +36,16 @@ namespace TiendaPapas
             if (contador == Ingredientes.Count )
             {
                 Console.WriteLine($"{Nombre} se ha hecho con los ingredientes:");
-                
+                for (int i = 0; i < Ingredientes.Count; i++)
+                {
+                    Console.WriteLine($"{Ingredientes[i].Nombre} - marca: {Ingredientes[i].Marca} - cantidad:{Ingredientes[i].Cantidad}");
+                }
+
             }
             else
             {
-                Console.WriteLine($"No se puede hacer {Nombre} con los ingredientes disponibles.");
-                return;
+                throw new Exception($"No se puede hacer {Nombre} con los ingredientes disponibles.");
+                
             }
             
         }

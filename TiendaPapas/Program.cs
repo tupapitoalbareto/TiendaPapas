@@ -287,8 +287,7 @@ namespace TiendaPapas
                 if (!productos.Any()) { Console.WriteLine("No hay productos."); return; }
                 for (int i = 0; i < productos.Count; i++)
                 {
-                    // Las propiedades de Producto no son públicas en el archivo; se muestra el tipo y el índice.
-                    Console.WriteLine($"{i}: {productos[i].GetType().Name}");
+                    Console.WriteLine($"{i}: {productos[i].Nombre} - marca: {productos[i].Marca} - cantidad: {productos[i].Cantidad}");
                 }
             }
 
@@ -364,8 +363,9 @@ namespace TiendaPapas
                     Ingredientes.Add(new Producto(cant, nomb, marca));
 
                     Console.WriteLine("son todos los ingredientes? (s/n)");
-                    if (Console.ReadLine()?.ToLower() == "s") { break; }
-                    else if (Console.ReadLine()?.ToLower() == "n") {
+                    string respuesta = Console.ReadLine()?.ToLower();
+                    if (respuesta == "s") { break; }
+                    else if (respuesta == "n") {
                         Console.WriteLine("ingredientes añadidos correctamente"); 
                     }
                     else {

@@ -35,7 +35,7 @@ namespace TiendaPapas
             Console.WriteLine("Carta de la Tienda de Papas:");
             for (int i = 0; i < Platillos.Count; i++)
             {
-                Console.WriteLine(Platillos[i]);
+                Console.WriteLine($"+++{Platillos[i]}+++");
             }
         }
     }

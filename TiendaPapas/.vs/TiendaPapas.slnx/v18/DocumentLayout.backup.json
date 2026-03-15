@@ -3,32 +3,32 @@
   "WorkspaceRootPath": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\recetas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:recetas.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\carta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:carta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\mesero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:mesero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\empleado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:empleado.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\cocinero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:cocinero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:producto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\mesero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:mesero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\carta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:carta.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\cocinero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|solutionrelative:cocinero.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{904DD9F9-2C2C-FFCE-24C1-BDCEF6E7B5BA}|TiendaPapas.csproj|c:\\users\\albar\\source\\repos\\tiendapapas\\sede.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -42,7 +42,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -62,12 +62,11 @@
               "RelativeToolTip": "Sede.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAAA7wBcAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-15T17:55:37.582Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-15T17:55:37.582Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
               "Title": "Mesero.cs",
               "DocumentMoniker": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Mesero.cs",
               "RelativeDocumentMoniker": "Mesero.cs",
@@ -80,72 +79,72 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAGoBAAAAAAAAAAAAwG8BAAA9AAAAAAAAAA==",
+              "ViewState": "AgIAAIABAAAAAAAAAAAowCIBAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-14T22:09:34.981Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Recetas.cs",
               "DocumentMoniker": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Recetas.cs",
               "RelativeDocumentMoniker": "Recetas.cs",
               "ToolTip": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Recetas.cs",
               "RelativeToolTip": "Recetas.cs",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAkwC8AAAAtAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAA1wBkAAABEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-14T22:29:05.837Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "Producto.cs",
               "DocumentMoniker": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Producto.cs",
               "RelativeDocumentMoniker": "Producto.cs",
               "ToolTip": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Producto.cs",
               "RelativeToolTip": "Producto.cs",
-              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBgAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAuwBgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-14T22:19:57.513Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "Empleado.cs",
               "DocumentMoniker": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Empleado.cs",
               "RelativeDocumentMoniker": "Empleado.cs",
               "ToolTip": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Empleado.cs",
               "RelativeToolTip": "Empleado.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA0AAAAPAAAAAAAAAA==",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwA0AAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-14T22:30:05.587Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "Carta.cs",
               "DocumentMoniker": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Carta.cs",
               "RelativeDocumentMoniker": "Carta.cs",
               "ToolTip": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Carta.cs",
               "RelativeToolTip": "Carta.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAgwB8AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABcAAAAAAAAAAAAgwCUAAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-14T23:19:48.349Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Cocinero.cs",
               "DocumentMoniker": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\Cocinero.cs",
               "RelativeDocumentMoniker": "Cocinero.cs",
@@ -153,8 +152,7 @@
               "RelativeToolTip": "Cocinero.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-14T23:33:15.839Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-14T23:33:15.839Z"
             }
           ]
         },
