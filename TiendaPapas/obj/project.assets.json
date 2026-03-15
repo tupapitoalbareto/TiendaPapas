@@ -57,11 +57,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\TiendaPapas.csproj",
+      "projectUniqueName": "C:\\Users\\albar\\Desktop\\ing sistemas\\semestre 3\\paradigmas de programacion\\RepositorioTaller1\\TiendaPapas\\TiendaPapas.csproj",
       "projectName": "TiendaPapas",
-      "projectPath": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\TiendaPapas.csproj",
+      "projectPath": "C:\\Users\\albar\\Desktop\\ing sistemas\\semestre 3\\paradigmas de programacion\\RepositorioTaller1\\TiendaPapas\\TiendaPapas.csproj",
       "packagesPath": "C:\\Users\\albar\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\obj\\",
+      "outputPath": "C:\\Users\\albar\\Desktop\\ing sistemas\\semestre 3\\paradigmas de programacion\\RepositorioTaller1\\TiendaPapas\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

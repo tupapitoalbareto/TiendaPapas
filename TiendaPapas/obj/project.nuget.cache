@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "NnVH/64fKBs=",
+  "dgSpecHash": "MPfOX7mNOio=",
   "success": true,
-  "projectFilePath": "C:\\Users\\albar\\source\\repos\\TiendaPapas\\TiendaPapas.csproj",
+  "projectFilePath": "C:\\Users\\albar\\Desktop\\ing sistemas\\semestre 3\\paradigmas de programacion\\RepositorioTaller1\\TiendaPapas\\TiendaPapas.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\albar\\.nuget\\packages\\csvhelper\\33.1.0\\csvhelper.33.1.0.nupkg.sha512"
   ],

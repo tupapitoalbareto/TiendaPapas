@@ -6,7 +6,7 @@ namespace TiendaPapas
 {
     public class Recetas
     {
-        List<string> Ingredientes { get; set; }
+        List<Producto> Ingredientes { get; set; }
         string Nombre { get; set; }
 
         Recetas(string nombre)
@@ -15,6 +15,13 @@ namespace TiendaPapas
         }
         public void HacerReceta()
         {
+            for (int i = 0; i < Ingredientes.Count; i++)
+            {
+                if (Ingredientes[i] == null )
+                {
+                    throw new Exception("el ingrediente no existe");
+                }
+            }
             Console.WriteLine($"{Nombre} se ha hecho con los ingredientes:");
             foreach (var ingrediente in Ingredientes)
             {
