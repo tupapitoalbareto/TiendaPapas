@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CsvHelper;
+using System.Globalization;
+using System.IO;
+using System.Text;
 
 namespace TiendaPapas
 {
@@ -12,145 +16,149 @@ namespace TiendaPapas
 
         static void Main()
         {
-            
-          
+            // Cargar datos al iniciar la aplicación
+            CargarProductos();
+            CargarSedes();
+            CargarCarta();
 
+            while (true)
+            {
+                Console.WriteLine("\n--- Administrador TiendaPapas ---");
+                Console.WriteLine("1. Gestionar Sedes");
+                Console.WriteLine("2. Gestionar Empleados");
+                Console.WriteLine("3. Gestionar Productos");
+                Console.WriteLine("4. Gestionar Carta");
+                Console.WriteLine("0. Salir");
+                Console.Write("Opción: ");
+                var opt = Console.ReadLine();
 
-                while (true)
+                switch (opt)
                 {
-                    Console.WriteLine("\n--- Administrador TiendaPapas ---");
-                    Console.WriteLine("1. Gestionar Sedes");
-                    Console.WriteLine("2. Gestionar Empleados");
-                    Console.WriteLine("3. Gestionar Productos");
-                    Console.WriteLine("4. Gestionar Carta");
-                    Console.WriteLine("0. Salir");
-                    Console.Write("Opción: ");
-                    var opt = Console.ReadLine();
-
-                    switch (opt)
-                    {
-                        case "1": MenuSedes(); break;
-                        case "2": MenuEmpleados(); break;
-                        case "3": MenuProductos(); break;
-                        case "4": MenuCarta(); break;
-                        case "0": return;
-                        default: Console.WriteLine("Opción no válida."); break;
-                    }
+                    case "1": MenuSedes(); break;
+                    case "2": MenuEmpleados(); break;
+                    case "3": MenuProductos(); break;
+                    case "4": MenuCarta(); break;
+                    case "0":
+                        // Guardar todo antes de salir
+                        GuardarTodos();
+                        return;
+                    default: Console.WriteLine("Opción no válida."); break;
                 }
             }
+        }
 
         #region Sedes
         static void MenuSedes()
+        {
+            while (true)
             {
-                while (true)
+                Console.WriteLine("\n--- Sedes ---");
+                Console.WriteLine("1. Crear Sede");
+                Console.WriteLine("2. Listar Sedes");
+                Console.WriteLine("3. Actualizar Sede");
+                Console.WriteLine("4. Buscar Sede");
+                Console.WriteLine("5. Eliminar Sede");
+                Console.WriteLine("0. Volver");
+                Console.Write("Opción: ");
+                var opt = Console.ReadLine();
+                switch (opt)
                 {
-                    Console.WriteLine("\n--- Sedes ---");
-                    Console.WriteLine("1. Crear Sede");
-                    Console.WriteLine("2. Listar Sedes");
-                    Console.WriteLine("3. Actualizar Sede");
-                    Console.WriteLine("4. Buscar Sede");
-                    Console.WriteLine("5. Eliminar Sede");
-                    Console.WriteLine("0. Volver");
-                    Console.Write("Opción: ");
-                    var opt = Console.ReadLine();
-                    switch (opt)
-                    {
-                        case "1": CrearSede(); break;
-                        case "2": ListarSedes(); break;
-                        case "3": ActualizarSede(); break;
-                        case "4": BuscarSede(); break;
-                        case "5": EliminarSede(); break;
-                        case "0": return;
-                        default: Console.WriteLine("Opción no válida."); break;
-                    }
+                    case "1": CrearSede(); break;
+                    case "2": ListarSedes(); break;
+                    case "3": ActualizarSede(); break;
+                    case "4": BuscarSede(); break;
+                    case "5": EliminarSede(); break;
+                    case "0": return;
+                    default: Console.WriteLine("Opción no válida."); break;
                 }
             }
+        }
 
-            static void CrearSede()
+        static void CrearSede()
+        {
+            Console.Write("Nombre de la sede: ");
+            var nombre = Console.ReadLine();
+            Console.Write("Ubicación: ");
+            var ubic = Console.ReadLine();
+            sedes.Add(new Sede(nombre, ubic));
+            Console.WriteLine("Sede creada.");
+        }
+
+        static void ListarSedes()
+        {
+            if (!sedes.Any()) { Console.WriteLine("No hay sedes."); return; }
+            for (int i = 0; i < sedes.Count; i++)
             {
-                Console.Write("Nombre de la sede: ");
-                var nombre = Console.ReadLine();
-                Console.Write("Ubicación: ");
-                var ubic = Console.ReadLine();
-                sedes.Add(new Sede(nombre, ubic));
-                Console.WriteLine("Sede creada.");
+                Console.WriteLine($"{i}: {sedes[i].Nombre} - {sedes[i].Ubicacion} (Empleados: {sedes[i].Empleados.Count})");
             }
+        }
 
-            static void ListarSedes()
+        static Sede SeleccionarSede()
+        {
+            ListarSedes();
+            Console.Write("Índice de sede: ");
+            if (int.TryParse(Console.ReadLine(), out int idx) && idx >= 0 && idx < sedes.Count) return sedes[idx];
+            Console.WriteLine("Índice inválido.");
+            return null;
+        }
+
+        static void ActualizarSede()
+        {
+            var s = SeleccionarSede();
+            if (s == null) return;
+            Console.Write("Nuevo nombre (enter para mantener): ");
+            var n = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(n)) s.Nombre = n;
+            Console.Write("Nueva ubicación (enter para mantener): ");
+            var u = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(u)) s.Ubicacion = u;
+            Console.WriteLine("Sede actualizada.");
+        }
+
+        static void BuscarSede()
+        {
+            Console.Write("Nombre a buscar: ");
+            var q = Console.ReadLine();
+            var found = sedes.Where(x => x.Nombre?.Equals(q, StringComparison.OrdinalIgnoreCase) == true).ToList();
+            if (!found.Any()) { Console.WriteLine("No encontrada."); return; }
+            foreach (var s in found) Console.WriteLine($"{s.Nombre} - {s.Ubicacion}");
+        }
+
+        static void EliminarSede()
+        {
+            var s = SeleccionarSede();
+            if (s == null) return;
+            sedes.Remove(s);
+            Console.WriteLine("Sede eliminada.");
+        }
+        #endregion
+
+        #region Empleados
+        static void MenuEmpleados()
+        {
+            while (true)
             {
-                if (!sedes.Any()) { Console.WriteLine("No hay sedes."); return; }
-                for (int i = 0; i < sedes.Count; i++)
+                Console.WriteLine("\n--- Empleados ---");
+                Console.WriteLine("1. Crear Empleado (Mesero/Cocinero) en Sede");
+                Console.WriteLine("2. Listar Empleados por Sede");
+                Console.WriteLine("3. Actualizar Empleado");
+                Console.WriteLine("4. Buscar Empleado por ID");
+                Console.WriteLine("5. Eliminar Empleado");
+                Console.WriteLine("0. Volver");
+                Console.Write("Opción: ");
+                var opt = Console.ReadLine();
+                switch (opt)
                 {
-                    Console.WriteLine($"{i}: {sedes[i].Nombre} - {sedes[i].Ubicacion} (Empleados: {sedes[i].Empleados.Count})");
+                    case "1": CrearEmpleado(); break;
+                    case "2": ListarEmpleadosPorSede(); break;
+                    case "3": ActualizarEmpleado(); break;
+                    case "4": BuscarEmpleadoPorID(); break;
+                    case "5": EliminarEmpleado(); break;
+                    case "0": return;
+                    default: Console.WriteLine("Opción no válida."); break;
                 }
             }
-
-            static Sede SeleccionarSede()
-            {
-                ListarSedes();
-                Console.Write("Índice de sede: ");
-                if (int.TryParse(Console.ReadLine(), out int idx) && idx >= 0 && idx < sedes.Count) return sedes[idx];
-                Console.WriteLine("Índice inválido.");
-                return null;
-            }
-
-            static void ActualizarSede()
-            {
-                var s = SeleccionarSede();
-                if (s == null) return;
-                Console.Write("Nuevo nombre (enter para mantener): ");
-                var n = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(n)) s.Nombre = n;
-                Console.Write("Nueva ubicación (enter para mantener): ");
-                var u = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(u)) s.Ubicacion = u;
-                Console.WriteLine("Sede actualizada.");
-            }
-
-            static void BuscarSede()
-            {
-                Console.Write("Nombre a buscar: ");
-                var q = Console.ReadLine();
-                var found = sedes.Where(x => x.Nombre?.Equals(q, StringComparison.OrdinalIgnoreCase) == true).ToList();
-                if (!found.Any()) { Console.WriteLine("No encontrada."); return; }
-                foreach (var s in found) Console.WriteLine($"{s.Nombre} - {s.Ubicacion}");
-            }
-
-            static void EliminarSede()
-            {
-                var s = SeleccionarSede();
-                if (s == null) return;
-                sedes.Remove(s);
-                Console.WriteLine("Sede eliminada.");
-            }
-            #endregion
-
-            #region Empleados
-            static void MenuEmpleados()
-            {
-                while (true)
-                {
-                    Console.WriteLine("\n--- Empleados ---");
-                    Console.WriteLine("1. Crear Empleado (Mesero/Cocinero) en Sede");
-                    Console.WriteLine("2. Listar Empleados por Sede");
-                    Console.WriteLine("3. Actualizar Empleado");
-                    Console.WriteLine("4. Buscar Empleado por ID");
-                    Console.WriteLine("5. Eliminar Empleado");
-                    Console.WriteLine("0. Volver");
-                    Console.Write("Opción: ");
-                    var opt = Console.ReadLine();
-                    switch (opt)
-                    {
-                        case "1": CrearEmpleado(); break;
-                        case "2": ListarEmpleadosPorSede(); break;
-                        case "3": ActualizarEmpleado(); break;
-                        case "4": BuscarEmpleadoPorID(); break;
-                        case "5": EliminarEmpleado(); break;
-                        case "0": return;
-                        default: Console.WriteLine("Opción no válida."); break;
-                    }
-                }
-            }
+        }
 
         static void CrearEmpleado()
         {
@@ -178,99 +186,127 @@ namespace TiendaPapas
             s.AgregarEmpleado(nuevo);
             Console.WriteLine("Empleado agregado.");
         }
-            
 
 
-            static void ListarEmpleadosPorSede()
+
+        static void ListarEmpleadosPorSede()
+        {
+            var s = SeleccionarSede();
+            if (s == null) return;
+            if (!s.Empleados.Any()) { Console.WriteLine("No hay empleados en esta sede."); return; }
+            foreach (var e in s.Empleados)
             {
-                var s = SeleccionarSede();
-                if (s == null) return;
-                if (!s.Empleados.Any()) { Console.WriteLine("No hay empleados en esta sede."); return; }
-                foreach (var e in s.Empleados)
+                Console.WriteLine($"Nombre: {e.Nombre}, ID: {e.ID}, Tipo: {e.GetType().Name}");
+            }
+        }
+
+        static (Sede sede, Empleado empleado) BuscarEmpleadoGlobalPorID(int id)
+        {
+            foreach (var s in sedes)
+            {
+                var e = s.Empleados.FirstOrDefault(x => x.ID == id);
+                if (e != null) return (s, e);
+            }
+            return (null, null);
+        }
+
+        static void BuscarEmpleadoPorID()
+        {
+            Console.Write("ID a buscar: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("ID inválido."); return; }
+            var (s, e) = BuscarEmpleadoGlobalPorID(id);
+            if (e == null) { Console.WriteLine("No encontrado."); return; }
+            Console.WriteLine($"Encontrado en {s.Nombre}: {e.Nombre} ({e.GetType().Name})");
+        }
+
+        static void ActualizarEmpleado()
+        {
+            Console.Write("ID de empleado a actualizar: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("ID inválido."); return; }
+            var (s, e) = BuscarEmpleadoGlobalPorID(id);
+            if (e == null) { Console.WriteLine("Empleado no encontrado."); return; }
+            Console.Write($"Nuevo nombre (actual: {e.Nombre}): ");
+            var nn = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(nn)) e.Nombre = nn;
+            Console.Write($"Nuevo ID (enter para mantener {e.ID}): ");
+            var nidStr = Console.ReadLine();
+            if (int.TryParse(nidStr, out int nid)) e.ID = nid;
+
+            // Si es Mesero, permitir actualizar mesa (propiedad propia)
+            if (e is Mesero m)
+            {
+                Console.Write($"Mesa asignada (actual: {m.MesaAsignada}): ");
+                if (int.TryParse(Console.ReadLine(), out int nm)) m.MesaAsignada = nm;
+            }
+
+            Console.WriteLine("Empleado actualizado.");
+        }
+
+        static void EliminarEmpleado()
+        {
+            Console.Write("ID de empleado a eliminar: ");
+            if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("ID inválido."); return; }
+            var (s, e) = BuscarEmpleadoGlobalPorID(id);
+            if (e == null) { Console.WriteLine("Empleado no encontrado."); return; }
+            s.EliminarEmpleado(e);
+            Console.WriteLine("Empleado eliminado.");
+        }
+        #endregion
+
+        #region Productos
+        static void MenuProductos()
+        {
+            while (true)
+            {
+                Console.WriteLine("\n--- Productos ---");
+                Console.WriteLine("1. Crear Producto");
+                Console.WriteLine("2. Listar Productos");
+                Console.WriteLine("3. Actualizar Producto");
+                Console.WriteLine("4. Eliminar Producto");
+                Console.WriteLine("0. Volver");
+                Console.Write("Opción: ");
+                var opt = Console.ReadLine();
+                switch (opt)
                 {
-                    Console.WriteLine($"Nombre: {e.Nombre}, ID: {e.ID}, Tipo: {e.GetType().Name}");
+                    case "1": CrearProducto(); break;
+                    case "2": ListarProductos(); break;
+                    case "3": ActualizarProducto(); break;
+                    case "4": EliminarProducto(); break;
+                    case "0": return;
+                    default: Console.WriteLine("Opción no válida."); break;
                 }
             }
+        }
 
-            static (Sede sede, Empleado empleado) BuscarEmpleadoGlobalPorID(int id)
+        static void CrearProducto()
+        {
+            Console.Write("Cantidad (numérica): ");
+            if (!int.TryParse(Console.ReadLine(), out int cant)) cant = 0;
+            Console.Write("Nombre: ");
+            var nombre = Console.ReadLine();
+            Console.Write("Marca: ");
+            var marca = Console.ReadLine();
+            productos.Add(new Producto(cant, nombre, marca));
+            Console.WriteLine("Producto creado.");
+        }
+
+        static void ListarProductos()
+        {
+            if (!productos.Any()) { Console.WriteLine("No hay productos."); return; }
+            for (int i = 0; i < productos.Count; i++)
             {
-                foreach (var s in sedes)
-                {
-                    var e = s.Empleados.FirstOrDefault(x => x.ID == id);
-                    if (e != null) return (s, e);
-                }
-                return (null, null);
+                Console.WriteLine($"{i}: {productos[i].Nombre} - marca: {productos[i].Marca} - cantidad: {productos[i].Cantidad}");
             }
+        }
 
-            static void BuscarEmpleadoPorID()
-            {
-                Console.Write("ID a buscar: ");
-                if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("ID inválido."); return; }
-                var (s, e) = BuscarEmpleadoGlobalPorID(id);
-                if (e == null) { Console.WriteLine("No encontrado."); return; }
-                Console.WriteLine($"Encontrado en {s.Nombre}: {e.Nombre} ({e.GetType().Name})");
-            }
-
-            static void ActualizarEmpleado()
-            {
-                Console.Write("ID de empleado a actualizar: ");
-                if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("ID inválido."); return; }
-                var (s, e) = BuscarEmpleadoGlobalPorID(id);
-                if (e == null) { Console.WriteLine("Empleado no encontrado."); return; }
-                Console.Write($"Nuevo nombre (actual: {e.Nombre}): ");
-                var nn = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(nn)) e.Nombre = nn;
-                Console.Write($"Nuevo ID (enter para mantener {e.ID}): ");
-                var nidStr = Console.ReadLine();
-                if (int.TryParse(nidStr, out int nid)) e.ID = nid;
-
-                // Si es Mesero, permitir actualizar mesa (propiedad propia)
-                if (e is Mesero m)
-                {
-                    Console.Write($"Mesa asignada (actual: {m.MesaAsignada}): ");
-                    if (int.TryParse(Console.ReadLine(), out int nm)) m.MesaAsignada = nm;
-                }
-
-                Console.WriteLine("Empleado actualizado.");
-            }
-
-            static void EliminarEmpleado()
-            {
-                Console.Write("ID de empleado a eliminar: ");
-                if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("ID inválido."); return; }
-                var (s, e) = BuscarEmpleadoGlobalPorID(id);
-                if (e == null) { Console.WriteLine("Empleado no encontrado."); return; }
-                s.EliminarEmpleado(e);
-                Console.WriteLine("Empleado eliminado.");
-            }
-            #endregion
-
-            #region Productos
-            static void MenuProductos()
-            {
-                while (true)
-                {
-                    Console.WriteLine("\n--- Productos ---");
-                    Console.WriteLine("1. Crear Producto");
-                    Console.WriteLine("2. Listar Productos");
-                    Console.WriteLine("3. Actualizar Producto");
-                    Console.WriteLine("4. Eliminar Producto");
-                    Console.WriteLine("0. Volver");
-                    Console.Write("Opción: ");
-                    var opt = Console.ReadLine();
-                    switch (opt)
-                    {
-                        case "1": CrearProducto(); break;
-                        case "2": ListarProductos(); break;
-                        case "3": ActualizarProducto(); break;
-                        case "4": EliminarProducto(); break;
-                        case "0": return;
-                        default: Console.WriteLine("Opción no válida."); break;
-                    }
-                }
-            }
-
-            static void CrearProducto()
+        static void ActualizarProducto()
+        {
+            ListarProductos();
+            Console.Write("Índice del producto a actualizar: ");
+            if (!int.TryParse(Console.ReadLine(), out int idx) || idx < 0 || idx >= productos.Count) { Console.WriteLine("Índice inválido."); return; }
+            Console.WriteLine("Las propiedades de Producto no son públicas en la clase actual; para modificar re-crea el producto.");
+            Console.Write("Desea reemplazar por uno nuevo? (s/n): ");
+            if (Console.ReadLine()?.ToLower() == "s")
             {
                 Console.Write("Cantidad (numérica): ");
                 if (!int.TryParse(Console.ReadLine(), out int cant)) cant = 0;
@@ -278,74 +314,46 @@ namespace TiendaPapas
                 var nombre = Console.ReadLine();
                 Console.Write("Marca: ");
                 var marca = Console.ReadLine();
-                productos.Add(new Producto(cant, nombre, marca));
-                Console.WriteLine("Producto creado.");
+                productos[idx] = new Producto(cant, nombre, marca);
+                Console.WriteLine("Producto reemplazado.");
             }
+        }
 
-            static void ListarProductos()
+        static void EliminarProducto()
+        {
+            ListarProductos();
+            Console.Write("Índice a eliminar: ");
+            if (!int.TryParse(Console.ReadLine(), out int idx) || idx < 0 || idx >= productos.Count) { Console.WriteLine("Índice inválido."); return; }
+            productos.RemoveAt(idx);
+            Console.WriteLine("Producto eliminado.");
+        }
+        #endregion
+
+        #region Carta
+        static void MenuCarta()
+        {
+            while (true)
             {
-                if (!productos.Any()) { Console.WriteLine("No hay productos."); return; }
-                for (int i = 0; i < productos.Count; i++)
+                Console.WriteLine("\n--- Carta ---");
+                Console.WriteLine("1. Mostrar Carta");
+                Console.WriteLine("2. Agregar Platillo (por nombre)");
+                Console.WriteLine("3. Eliminar Platillo por índice");
+                Console.WriteLine("0. Volver");
+                Console.Write("Opción: ");
+                var opt = Console.ReadLine();
+                switch (opt)
                 {
-                    Console.WriteLine($"{i}: {productos[i].Nombre} - marca: {productos[i].Marca} - cantidad: {productos[i].Cantidad}");
+                    case "1": carta.MostrarCarta(); break;
+                    case "2": AgregarPlatillo(); break;
+                    case "3": EliminarPlatillo(); break;
+                    case "0": return;
+                    default: Console.WriteLine("Opción no válida."); break;
                 }
             }
+        }
 
-            static void ActualizarProducto()
-            {
-                ListarProductos();
-                Console.Write("Índice del producto a actualizar: ");
-                if (!int.TryParse(Console.ReadLine(), out int idx) || idx < 0 || idx >= productos.Count) { Console.WriteLine("Índice inválido."); return; }
-                Console.WriteLine("Las propiedades de Producto no son públicas en la clase actual; para modificar re-crea el producto.");
-                Console.Write("Desea reemplazar por uno nuevo? (s/n): ");
-                if (Console.ReadLine()?.ToLower() == "s")
-                {
-                    Console.Write("Cantidad (numérica): ");
-                    if (!int.TryParse(Console.ReadLine(), out int cant)) cant = 0;
-                    Console.Write("Nombre: ");
-                    var nombre = Console.ReadLine();
-                    Console.Write("Marca: ");
-                    var marca = Console.ReadLine();
-                    productos[idx] = new Producto(cant, nombre, marca);
-                    Console.WriteLine("Producto reemplazado.");
-                }
-            }
-
-            static void EliminarProducto()
-            {
-                ListarProductos();
-                Console.Write("Índice a eliminar: ");
-                if (!int.TryParse(Console.ReadLine(), out int idx) || idx < 0 || idx >= productos.Count) { Console.WriteLine("Índice inválido."); return; }
-                productos.RemoveAt(idx);
-                Console.WriteLine("Producto eliminado.");
-            }
-            #endregion
-
-            #region Carta
-            static void MenuCarta()
-            {
-                while (true)
-                {
-                    Console.WriteLine("\n--- Carta ---");
-                    Console.WriteLine("1. Mostrar Carta");
-                    Console.WriteLine("2. Agregar Platillo (por nombre)");
-                    Console.WriteLine("3. Eliminar Platillo por índice");
-                    Console.WriteLine("0. Volver");
-                    Console.Write("Opción: ");
-                    var opt = Console.ReadLine();
-                    switch (opt)
-                    {
-                        case "1": carta.MostrarCarta(); break;
-                        case "2": AgregarPlatillo(); break;
-                        case "3": EliminarPlatillo(); break;
-                        case "0": return;
-                        default: Console.WriteLine("Opción no válida."); break;
-                    }
-                }
-            }
-
-            static void AgregarPlatillo()
-            {
+        static void AgregarPlatillo()
+        {
             try
             {
                 Console.WriteLine("Nombre del platillo: ");
@@ -365,14 +373,16 @@ namespace TiendaPapas
                     Console.WriteLine("son todos los ingredientes? (s/n)");
                     string respuesta = Console.ReadLine()?.ToLower();
                     if (respuesta == "s") { break; }
-                    else if (respuesta == "n") {
-                        Console.WriteLine("ingredientes añadidos correctamente"); 
+                    else if (respuesta == "n")
+                    {
+                        Console.WriteLine("Continúe añadiendo ingredientes.");
                     }
-                    else {
+                    else
+                    {
                         Console.WriteLine("escriba un caracter valido");
                     }
-                    
-                   
+
+
                 }
 
                 var receta = new Recetas(nombre, Ingredientes);
@@ -384,30 +394,280 @@ namespace TiendaPapas
             {
                 Console.WriteLine($"Error al crear platillo: {ex.Message}");
             }
-            }
+        }
 
-            static void EliminarPlatillo()
+        static void EliminarPlatillo()
+        {
+            try
             {
-                try
+                carta.MostrarCarta();
+                Console.Write("Índice a eliminar: ");
+                if (!int.TryParse(Console.ReadLine(), out int idx)) { Console.WriteLine("Índice inválido."); return; }
+                if (idx < 0 || idx >= carta.Platillos.Count) { Console.WriteLine("Índice fuera de rango."); return; }
+                carta.EliminarPlatillo(carta.Platillos[idx]);
+                Console.WriteLine("Platillo eliminado.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+
+        #endregion
+
+        // --- Persistencia ---
+
+        static void GuardarProductos()
+        {
+            try
+            {
+                using (var writer = new StreamWriter("Producto.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
                 {
-                    carta.MostrarCarta();
-                    Console.Write("Índice a eliminar: ");
-                    if (!int.TryParse(Console.ReadLine(), out int idx)) { Console.WriteLine("Índice inválido."); return; }
-                    // Carta.Plantillos es privada en el archivo? En tu clase es pública `Platillos`, así que la usamos.
-                    if (idx < 0 || idx >= carta.Platillos.Count) { Console.WriteLine("Índice fuera de rango."); return; }
-                    carta.EliminarPlatillo(carta.Platillos[idx]);
-                    Console.WriteLine("Platillo eliminado.");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error: {ex.Message}");
+                    csv.WriteRecords(productos);
                 }
             }
+            catch (Exception ex) { Console.WriteLine($"Error al guardar productos: {ex.Message}"); }
+        }
+
+        static void CargarProductos()
+        {
+            if (!File.Exists("Producto.csv")) { productos = new List<Producto>(); return; }
+
+            var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                PrepareHeaderForMatch = args => args.Header.ToLower(),
+                HeaderValidated = null, // ESTO EVITA LA PANTALLA ROJA
+                MissingFieldFound = null // ESTO TAMBIÉN
+            };
+
+            try
+            {
+                using (var reader = new StreamReader("Producto.csv"))
+                using (var csv = new CsvReader(reader, config))
+                {
+                    productos = csv.GetRecords<Producto>().ToList();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Archivo de productos dañado. Iniciando lista vacía.");
+                productos = new List<Producto>();
+            }
+        }
+
+        static void GuardarSedes()
+        {
+            try
+            {
+                // 1. Guardar Sedes
+                using (var writer = new StreamWriter("Sede.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(sedes);
+                }
+
+                // 2. Guardar Empleados con su Sede vinculada
+                var listaEmpleados = new List<object>();
+                foreach (var s in sedes)
+                {
+                    foreach (var e in s.Empleados)
+                    {
+                        listaEmpleados.Add(new
+                        {
+                            SedeNombre = s.Nombre, // Clave para re-asociarlos
+                            e.Nombre,
+                            e.ID,
+                            Tipo = e.GetType().Name,
+                            Mesa = (e is Mesero m) ? m.MesaAsignada : 0
+                        });
+                    }
+                }
+
+                using (var writer = new StreamWriter("Empleado.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(listaEmpleados);
+                }
+            }
+            catch (Exception ex) { Console.WriteLine($"Error al guardar: {ex.Message}"); }
+        }
+
+        static void CargarSedes()
+        {
+            if (!File.Exists("Sede.csv")) { sedes = new List<Sede>(); return; }
+
+            var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                PrepareHeaderForMatch = args => args.Header.ToLower(),
+                HeaderValidated = null,
+                MissingFieldFound = null
+            };
+
+            try
+            {
+                // 1. Cargar Sedes
+                using (var reader = new StreamReader("Sede.csv"))
+                using (var csv = new CsvReader(reader, config))
+                {
+                    sedes = csv.GetRecords<Sede>().ToList();
+                }
+
+                foreach (var s in sedes)
+                {
+                    s.Empleados = new List<Empleado>();
+                }
+
+                // 2. Cargar y repartir Empleados
+                if (File.Exists("Empleado.csv"))
+                {
+                    using (var reader = new StreamReader("Empleado.csv"))
+                    using (var csv = new CsvReader(reader, config))
+                    {
+                        var registros = csv.GetRecords<dynamic>().ToList();
+                        foreach (var r in registros)
+                        {
+                            var d = (IDictionary<string, object>)r;
+
+                            string sNombre = d.ContainsKey("SedeNombre") ? d["SedeNombre"]?.ToString() : null;
+                            string eNombre = d.ContainsKey("Nombre") ? d["Nombre"]?.ToString() : null;
+                            if (!int.TryParse(d["ID"]?.ToString(), out int eID)) continue;
+                            string tipo = d.ContainsKey("Tipo") ? d["Tipo"]?.ToString() : null;
+
+                            if (string.IsNullOrEmpty(sNombre) || string.IsNullOrEmpty(eNombre)) continue;
+
+                            Empleado nuevo;
+                            if (tipo == "Mesero")
+                            {
+                                int mesa = d.ContainsKey("Mesa") && int.TryParse(d["Mesa"]?.ToString(), out int mVal) ? mVal : 0;
+                                nuevo = new Mesero(eNombre, eID, mesa);
+                            }
+                            else
+                            {
+                                nuevo = new Cocinero(eNombre, eID);
+                            }
+
+                            var sedeDestino = sedes.FirstOrDefault(
+                              x => x.Nombre != null &&
+                               sNombre != null &&
+                                 x.Nombre.Trim().ToLower() == sNombre.Trim().ToLower());
+
+                            if (sedeDestino != null)
+                            {
+                                sedeDestino.AgregarEmpleado(nuevo);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en carga: {ex.Message}");
+            }
+        }
+
+        // Persistencia de Carta usando CsvHelper (campo Ingredients serializado)
+        static void GuardarCarta()
+        {
+            try
+            {
+                var dtoList = carta.Platillos.Select(r => new RecetaCsvDto
+                {
+                    Nombre = r.Nombre,
+                    Ingredientes = SerializeIngredientes(r.Ingredientes)
+                }).ToList();
+
+                using (var writer = new StreamWriter("Carta.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(dtoList);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al guardar carta: {ex.Message}");
+            }
+        }
+
+        static void CargarCarta()
+        {
+            try
+            {
+                if (!File.Exists("Carta.csv")) { carta = new Carta(new List<Recetas>()); return; }
+
+                var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    PrepareHeaderForMatch = args => args.Header.ToLower(),
+                    HeaderValidated = null,
+                    MissingFieldFound = null
+                };
+
+                using (var reader = new StreamReader("Carta.csv"))
+                using (var csv = new CsvReader(reader, config))
+                {
+                    var dtoList = csv.GetRecords<RecetaCsvDto>().ToList();
+                    carta = new Carta(new List<Recetas>());
+                    foreach (var dto in dtoList)
+                    {
+                        var ingredientes = DeserializeIngredientes(dto.Ingredientes);
+                        var receta = new Recetas(dto.Nombre, ingredientes);
+                        carta.AgregarPlatillo(receta);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al cargar carta: {ex.Message}");
+                carta = new Carta(new List<Recetas>());
+            }
+        }
+
+        static void GuardarTodos()
+        {
+            GuardarProductos();
+            GuardarSedes();
+            GuardarCarta();
+        }
+
+        // Helpers para serializar ingredientes (uso Base64 para campos de texto)
+        static string SerializeIngredientes(List<Producto> ingredientes)
+        {
+            if (ingredientes == null || ingredientes.Count == 0) return string.Empty;
+            // Formato por item: base64(nombre);base64(marca);cantidad   y se separan items por "||"
+            return string.Join("||", ingredientes.Select(p => $"{ToBase64(p.Nombre)};{ToBase64(p.Marca)};{p.Cantidad}"));
+        }
+
+        static List<Producto> DeserializeIngredientes(string data)
+        {
+            var list = new List<Producto>();
+            if (string.IsNullOrWhiteSpace(data)) return list;
+            var items = data.Split(new[] { "||" }, StringSplitOptions.None);
+            foreach (var it in items)
+            {
+                var parts = it.Split(';');
+                if (parts.Length < 3) continue;
+                if (!int.TryParse(parts[2], out int cant)) continue;
+                var nombre = FromBase64(parts[0]);
+                var marca = FromBase64(parts[1]);
+                list.Add(new Producto(cant, nombre, marca));
+            }
+            return list;
+        }
+
+        static string ToBase64(string s) => Convert.ToBase64String(Encoding.UTF8.GetBytes(s ?? string.Empty));
+        static string FromBase64(string b)
+        {
+            try { return Encoding.UTF8.GetString(Convert.FromBase64String(b ?? "")); }
+            catch { return string.Empty; }
+        }
+
+        // DTO interno para CsvHelper
+        private class RecetaCsvDto
+        {
+            public string Nombre { get; set; }
+            public string Ingredientes { get; set; }
+        }
     }
-            
-            #endregion
 }
-    
-           
 
 
