@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CsvHelper;
+using System.Globalization;
+using System.IO;
+using System.Text;
 
 namespace TiendaPapas
 {
@@ -12,6 +16,11 @@ namespace TiendaPapas
 
         static void Main()
         {
+            // Cargar datos al iniciar la aplicación
+            CargarProductos();
+            CargarSedes();
+            CargarCarta();
+
             while (true)
             {
                 Console.WriteLine("\n--- Administrador TiendaPapas ---");
@@ -29,7 +38,10 @@ namespace TiendaPapas
                     case "2": MenuEmpleados(); break;
                     case "3": MenuProductos(); break;
                     case "4": MenuCarta(); break;
-                    case "0": return;
+                    case "0":
+                        // Guardar todo antes de salir
+                        GuardarTodos();
+                        return;
                     default: Console.WriteLine("Opción no válida."); break;
                 }
             }
@@ -159,7 +171,7 @@ namespace TiendaPapas
             Console.Write("ID (numérico): ");
             if (!int.TryParse(Console.ReadLine(), out int id)) { Console.WriteLine("ID inválido."); return; }
 
-            Empleados nuevo = null;
+            Empleado nuevo = null;
             if (t == "1")
             {
                 Console.Write("Mesa asignada (numérica): ");
@@ -175,6 +187,8 @@ namespace TiendaPapas
             Console.WriteLine("Empleado agregado.");
         }
 
+
+
         static void ListarEmpleadosPorSede()
         {
             var s = SeleccionarSede();
@@ -186,7 +200,7 @@ namespace TiendaPapas
             }
         }
 
-        static (Sede sede, Empleados empleado) BuscarEmpleadoGlobalPorID(int id)
+        static (Sede sede, Empleado empleado) BuscarEmpleadoGlobalPorID(int id)
         {
             foreach (var s in sedes)
             {
@@ -281,8 +295,7 @@ namespace TiendaPapas
             if (!productos.Any()) { Console.WriteLine("No hay productos."); return; }
             for (int i = 0; i < productos.Count; i++)
             {
-                // Las propiedades de Producto no son públicas en el archivo; se muestra el tipo y el índice.
-                Console.WriteLine($"{i}: {productos[i].GetType().Name}");
+                Console.WriteLine($"{i}: {productos[i].Nombre} - marca: {productos[i].Marca} - cantidad: {productos[i].Cantidad}");
             }
         }
 
@@ -341,22 +354,41 @@ namespace TiendaPapas
 
         static void AgregarPlatillo()
         {
-            Console.Write("Nombre del platillo: ");
-            var nombre = Console.ReadLine();
-
-            // Intentar crear instancia de Recetas por reflexión (constructor no público en el archivo original).
             try
             {
-                var tipoReceta = typeof(Recetas);
-                var ctor = tipoReceta.GetConstructor(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Public, null, new Type[] { typeof(string) }, null);
-                if (ctor == null)
+                Console.WriteLine("Nombre del platillo: ");
+                var nombre = Console.ReadLine();
+                var Ingredientes = new List<Producto>();
+
+                while (true)
                 {
-                    Console.WriteLine("No es posible crear Recetas porque el constructor no es accesible. Cambia el constructor de Recetas a public o internal con parámetro string.");
-                    return;
+                    Console.WriteLine("indique el nombre del producto");
+                    string nomb = Console.ReadLine();
+                    Console.WriteLine("indique la marca del producto");
+                    string marca = Console.ReadLine();
+                    Console.WriteLine("indique la cantidad del producto");
+                    int cant = int.Parse(Console.ReadLine());
+                    Ingredientes.Add(new Producto(cant, nomb, marca));
+
+                    Console.WriteLine("son todos los ingredientes? (s/n)");
+                    string respuesta = Console.ReadLine()?.ToLower();
+                    if (respuesta == "s") { break; }
+                    else if (respuesta == "n")
+                    {
+                        Console.WriteLine("Continúe añadiendo ingredientes.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("escriba un caracter valido");
+                    }
+
+
                 }
-                var receta = (Recetas)ctor.Invoke(new object[] { nombre });
+
+                var receta = new Recetas(nombre, Ingredientes);
+                receta.ObtenerReceta(productos); // Obtener ingredientes de la bodega
                 carta.AgregarPlatillo(receta);
-                Console.WriteLine("Platillo agregado a la carta.");
+
             }
             catch (Exception ex)
             {
@@ -371,7 +403,6 @@ namespace TiendaPapas
                 carta.MostrarCarta();
                 Console.Write("Índice a eliminar: ");
                 if (!int.TryParse(Console.ReadLine(), out int idx)) { Console.WriteLine("Índice inválido."); return; }
-                // Carta.Plantillos es privada en el archivo? En tu clase es pública `Platillos`, así que la usamos.
                 if (idx < 0 || idx >= carta.Platillos.Count) { Console.WriteLine("Índice fuera de rango."); return; }
                 carta.EliminarPlatillo(carta.Platillos[idx]);
                 Console.WriteLine("Platillo eliminado.");
@@ -381,7 +412,262 @@ namespace TiendaPapas
                 Console.WriteLine($"Error: {ex.Message}");
             }
         }
+
         #endregion
+
+        // --- Persistencia ---
+
+        static void GuardarProductos()
+        {
+            try
+            {
+                using (var writer = new StreamWriter("Producto.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(productos);
+                }
+            }
+            catch (Exception ex) { Console.WriteLine($"Error al guardar productos: {ex.Message}"); }
+        }
+
+        static void CargarProductos()
+        {
+            if (!File.Exists("Producto.csv")) { productos = new List<Producto>(); return; }
+
+            var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                PrepareHeaderForMatch = args => args.Header.ToLower(),
+                HeaderValidated = null, // ESTO EVITA LA PANTALLA ROJA
+                MissingFieldFound = null // ESTO TAMBIÉN
+            };
+
+            try
+            {
+                using (var reader = new StreamReader("Producto.csv"))
+                using (var csv = new CsvReader(reader, config))
+                {
+                    productos = csv.GetRecords<Producto>().ToList();
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Archivo de productos dañado. Iniciando lista vacía.");
+                productos = new List<Producto>();
+            }
+        }
+
+        static void GuardarSedes()
+        {
+            try
+            {
+                // 1. Guardar Sedes
+                using (var writer = new StreamWriter("Sede.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(sedes);
+                }
+
+                // 2. Guardar Empleados con su Sede vinculada
+                var listaEmpleados = new List<object>();
+                foreach (var s in sedes)
+                {
+                    foreach (var e in s.Empleados)
+                    {
+                        listaEmpleados.Add(new
+                        {
+                            SedeNombre = s.Nombre, // Clave para re-asociarlos
+                            e.Nombre,
+                            e.ID,
+                            Tipo = e.GetType().Name,
+                            Mesa = (e is Mesero m) ? m.MesaAsignada : 0
+                        });
+                    }
+                }
+
+                using (var writer = new StreamWriter("Empleado.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(listaEmpleados);
+                }
+            }
+            catch (Exception ex) { Console.WriteLine($"Error al guardar: {ex.Message}"); }
+        }
+
+        static void CargarSedes()
+        {
+            if (!File.Exists("Sede.csv")) { sedes = new List<Sede>(); return; }
+
+            var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                PrepareHeaderForMatch = args => args.Header.ToLower(),
+                HeaderValidated = null,
+                MissingFieldFound = null
+            };
+
+            try
+            {
+                // 1. Cargar Sedes
+                using (var reader = new StreamReader("Sede.csv"))
+                using (var csv = new CsvReader(reader, config))
+                {
+                    sedes = csv.GetRecords<Sede>().ToList();
+                }
+
+                foreach (var s in sedes)
+                {
+                    s.Empleados = new List<Empleado>();
+                }
+
+                // 2. Cargar y repartir Empleados
+                if (File.Exists("Empleado.csv"))
+                {
+                    using (var reader = new StreamReader("Empleado.csv"))
+                    using (var csv = new CsvReader(reader, config))
+                    {
+                        var registros = csv.GetRecords<dynamic>().ToList();
+                        foreach (var r in registros)
+                        {
+                            var d = (IDictionary<string, object>)r;
+
+                            string sNombre = d.ContainsKey("SedeNombre") ? d["SedeNombre"]?.ToString() : null;
+                            string eNombre = d.ContainsKey("Nombre") ? d["Nombre"]?.ToString() : null;
+                            if (!int.TryParse(d["ID"]?.ToString(), out int eID)) continue;
+                            string tipo = d.ContainsKey("Tipo") ? d["Tipo"]?.ToString() : null;
+
+                            if (string.IsNullOrEmpty(sNombre) || string.IsNullOrEmpty(eNombre)) continue;
+
+                            Empleado nuevo;
+                            if (tipo == "Mesero")
+                            {
+                                int mesa = d.ContainsKey("Mesa") && int.TryParse(d["Mesa"]?.ToString(), out int mVal) ? mVal : 0;
+                                nuevo = new Mesero(eNombre, eID, mesa);
+                            }
+                            else
+                            {
+                                nuevo = new Cocinero(eNombre, eID);
+                            }
+
+                            var sedeDestino = sedes.FirstOrDefault(
+                              x => x.Nombre != null &&
+                               sNombre != null &&
+                                 x.Nombre.Trim().ToLower() == sNombre.Trim().ToLower());
+
+                            if (sedeDestino != null)
+                            {
+                                sedeDestino.AgregarEmpleado(nuevo);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en carga: {ex.Message}");
+            }
+        }
+
+        // Persistencia de Carta usando CsvHelper (campo Ingredients serializado)
+        static void GuardarCarta()
+        {
+            try
+            {
+                var dtoList = carta.Platillos.Select(r => new RecetaCsvDto
+                {
+                    Nombre = r.Nombre,
+                    Ingredientes = SerializeIngredientes(r.Ingredientes)
+                }).ToList();
+
+                using (var writer = new StreamWriter("Carta.csv"))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(dtoList);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al guardar carta: {ex.Message}");
+            }
+        }
+
+        static void CargarCarta()
+        {
+            try
+            {
+                if (!File.Exists("Carta.csv")) { carta = new Carta(new List<Recetas>()); return; }
+
+                var config = new CsvHelper.Configuration.CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    PrepareHeaderForMatch = args => args.Header.ToLower(),
+                    HeaderValidated = null,
+                    MissingFieldFound = null
+                };
+
+                using (var reader = new StreamReader("Carta.csv"))
+                using (var csv = new CsvReader(reader, config))
+                {
+                    var dtoList = csv.GetRecords<RecetaCsvDto>().ToList();
+                    carta = new Carta(new List<Recetas>());
+                    foreach (var dto in dtoList)
+                    {
+                        var ingredientes = DeserializeIngredientes(dto.Ingredientes);
+                        var receta = new Recetas(dto.Nombre, ingredientes);
+                        carta.AgregarPlatillo(receta);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al cargar carta: {ex.Message}");
+                carta = new Carta(new List<Recetas>());
+            }
+        }
+
+        static void GuardarTodos()
+        {
+            GuardarProductos();
+            GuardarSedes();
+            GuardarCarta();
+        }
+
+        // Helpers para serializar ingredientes (uso Base64 para campos de texto)
+        static string SerializeIngredientes(List<Producto> ingredientes)
+        {
+            if (ingredientes == null || ingredientes.Count == 0) return string.Empty;
+            // Formato por item: base64(nombre);base64(marca);cantidad   y se separan items por "||"
+            return string.Join("||", ingredientes.Select(p => $"{ToBase64(p.Nombre)};{ToBase64(p.Marca)};{p.Cantidad}"));
+        }
+
+        static List<Producto> DeserializeIngredientes(string data)
+        {
+            var list = new List<Producto>();
+            if (string.IsNullOrWhiteSpace(data)) return list;
+            var items = data.Split(new[] { "||" }, StringSplitOptions.None);
+            foreach (var it in items)
+            {
+                var parts = it.Split(';');
+                if (parts.Length < 3) continue;
+                if (!int.TryParse(parts[2], out int cant)) continue;
+                var nombre = FromBase64(parts[0]);
+                var marca = FromBase64(parts[1]);
+                list.Add(new Producto(cant, nombre, marca));
+            }
+            return list;
+        }
+
+        static string ToBase64(string s) => Convert.ToBase64String(Encoding.UTF8.GetBytes(s ?? string.Empty));
+        static string FromBase64(string b)
+        {
+            try { return Encoding.UTF8.GetString(Convert.FromBase64String(b ?? "")); }
+            catch { return string.Empty; }
+        }
+
+        // DTO interno para CsvHelper
+        private class RecetaCsvDto
+        {
+            public string Nombre { get; set; }
+            public string Ingredientes { get; set; }
+        }
     }
 }
+
 

@@ -29,12 +29,13 @@ namespace TiendaPapas
                 Platillos.Remove(platillo);
             }
         }
+
         public void MostrarCarta()
         {
             Console.WriteLine("Carta de la Tienda de Papas:");
-            foreach (var platillo in Platillos)
+            for (int i = 0; i < Platillos.Count; i++)
             {
-                Console.WriteLine(platillo);
+                Console.WriteLine($"+++{Platillos[i]}+++");
             }
         }
     }

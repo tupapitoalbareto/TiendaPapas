@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TiendaPapas
 {
-    public abstract class Empleados
+    public abstract class Empleado
 
     {
         private string nombre;
@@ -27,7 +27,7 @@ namespace TiendaPapas
         }
         public int ID { get; set; }
 
-        public Empleados(string nombre, int id)
+        public Empleado(string nombre, int id)
         {
             Nombre = nombre;
             ID = id;
