@@ -32,7 +32,6 @@ namespace TiendaPapas
             Nombre = nombre;
             ID = id;
         }
-        public abstract void Trabajar(Recetas platillo);
 
     }
 }

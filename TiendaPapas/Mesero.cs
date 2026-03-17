@@ -10,9 +10,9 @@ namespace TiendaPapas
         public Mesero(string nombre , int id , int MesaAsignada) : base(nombre , id) { 
             this.MesaAsignada = MesaAsignada;
         }
-        public override void Trabajar(Recetas platillo)
+        public void Trabajar(Recetas platillo)
         {
-            Console.WriteLine($"El mesero {Nombre} (ID: {ID}) está atendiendo la mesa {MesaAsignada} la cual tie eun pedido de {platillo}");
+            Console.WriteLine($"El mesero {Nombre} (ID: {ID}) está atendiendo la mesa {MesaAsignada} la cual tiene un pedido de {platillo}");
         }
     }
 }

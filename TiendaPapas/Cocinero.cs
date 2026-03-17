@@ -9,7 +9,7 @@ namespace TiendaPapas
         public Cocinero(string nombre, int id) : base(nombre, id)
         {
         }
-        public override void Trabajar(Recetas platillo)
+        public void Trabajar(Recetas platillo)
         {
             Console.WriteLine($"el chef ya esta elaborando el platillo {platillo}");
         }
