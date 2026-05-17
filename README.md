@@ -91,3 +91,6 @@ DIP - Dependency Inversion Principle
 Los servicios dependen de abstracciones mediante interfaces y son resueltos usando Inyección de Dependencias.
 
 
+Autores:
+Samuel Bedoya Ruiz
+Tomas Eugenio Cuesta Lopez
