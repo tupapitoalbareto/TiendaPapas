@@ -1,40 +1,93 @@
-Enunciado: Sistema de Gestión "TiendaPapas"
+Descripción del sistema. 
 
-Descripción del Problema: 
-Actualmente, los negocios de comida rápida con múltiples sedes enfrentan dificultades para centralizar la información de su personal y sus inventarios. 
-La falta de un sistema digital provoca desorden en la asignación de roles (meseros y cocineros)
-y falta de visibilidad sobre los productos disponibles en cada punto de venta y las recetas que componen el menú.
-Propuesta de Solución: Se desarrollará una aplicación de consola en C# orientada a objetos que permita 
-a un administrador gestionar cuatro pilares fundamentales del negocio:
-
-1: Sede
-
-2: Empleado
-
-3: producto
-
-4: Receta
-
-El programa posee siete clases, las cuales son las siguientes:
-Empleado, mesero, cocinero, carta, receta, producto y sedes, 
-las cuales contemplan un robusto sistema de gestión para restaurantes enfocado en las papas fritas.
+TindaPapas es una aplicación de consola desarrollada en C# y .NET, la cual está enfocada en la gestión y administración de un restaurante de comida rápida, centrado en papas fritas. El sistema permitirá gestionar y administrar la información relacionada con las sedes, empleados, productos entre otros. Consideramos que mientras más tiendas de papas o más sedes se crean en la vida real, más complejo será la administración y gestión de estas. Por ello, este sistema es importante, ya que permite centralizar y manejar las tiendas de una forma mucho más organizada y controlada para un administrador. Este sistema permite el CRUD, crear, buscar, actualizar y eliminar en los siguientes componentes, gestión de sedes, gestión de empleados, gestión de producto y gestión de recetas.
 
 
-el sistema implemetna herencia con las clases empeado (clase padre), mesero y cocinero (clases hijas).
+1:
 
-En la aplicación de consola, teniendo en cuenta los 4 pilares mencionados anteriormente, el administrador podrá gestionar y añadir una gran cantidad de sedes, 
-las cuales representarán los puntos de venta de los restaurantes que este mismo administra. Para cada sede podrá seleccionar el nombre del punto de venta y su ubicación.
-Además de esto, podrá añadir, buscar, eliminar y actualizar estos mismos puntos de venta o, como los nombramos, sedes.
-
-También el administrador, en otro pilar, podrá gestionar y añadir los empleados que él considere pertinentes en sus respectivas sedes o puntos de venta de trabajo.
-Este podrá realizar acciones tales como añadir, buscar, eliminar o buscar el empleado por el ID, entre otras funciones.
-
-De igual forma, el administrador podrá gestionar los productos que tenga el negocio, o en otras palabras, el inventario.
-Podrá añadir la cantidad numérica del producto, el nombre de este y la marca para poder referenciar qué tipos de productos tiene. 
-Además, tendrá toda la gama de funciones como buscar, añadir, eliminar, etcétera.
-
-Y por último, podrá crear recetas con los ingredientes o productos que sean pertinentes para realizar dicha receta.
+Para este parámetro se decidió reutilizar la estructura, clases y relaciones establecidas previamente en el taller numero 2 
 
 
+
+2:
+
+El proyecto implementa la programación orientada a aspectos utilizando el Castle Windsor y Castle Dynamic Proxy, configurados y funcionando. 
+
+Las interfaces implementadas fueron IAutentic e IPersistencia 
+
+
+En el caso de IAutentic se implementó un interceptor llamado AutenticatorInterceptor que realiza una autenticación automática al iniciar el programa, en donde el administrador tendrá que registrarse con el usuario y con su contraseña. Si esta persona ingresa valores erróneos en su autenticación, el sistema no lo dejará acceder y le denegará su entrada.
+
+
+Y para IPersistencia se implementó un interceptor llamado PersistenciaInterceptor el cual conserva la persistencia del programa para producto y sedes 
+
+
+3:
+
+El sistema incorpora elementos de programación funcional aplicados sobre el dominio del negocio.
+
+Uso de LINQ
+
+Se implementaron consultas utilizando: Where, Select, Aggregate
+
+Ejemplos: Filtrado de productos con bajo stock, Obtención de nombres de productos, Cálculo del total de inventario
+
+
+Funciones puras
+
+Se desarrollaron funciones encargadas únicamente de procesar información sin modificar el estado del sistema.
+
+Funciones de alto orden
+
+Se utilizaron delegados Func<> y Action<> para manejar operaciones y comportamientos reutilizables.
+
+Tipo inmutable
+
+La clase Carta fue implementada como un record, permitiendo trabajar con un objeto inmutable alineado con el paradigma funcional.
+
+
+
+4:
+
+Programación Orientada a Eventos
+
+El sistema implementa eventos personalizados en C# para representar cambios importantes dentro del dominio de negocio.
+
+Eventos implementados
+ProductoAgregado
+
+Se dispara automáticamente cuando un nuevo producto es agregado al inventario.
+
+SedeCreada
+
+Se ejecuta cuando una nueva sede es registrada dentro del sistema.
+
+Características de los eventos
+Uso de event, Uso de EventHandler, Implementación de EventArgs personalizados, Reacciones automáticas mediante eventos
+
+
+
+
+Aplicación de Principios SOLID
+
+SRP - Single Responsibility Principle
+
+Cada clase posee una responsabilidad específica dentro del sistema.
+
+OCP - Open/Closed Principle
+
+El sistema puede extenderse mediante nuevas clases derivadas sin modificar las existentes.
+
+LSP - Liskov Substitution Principle
+
+Las clases Mesero y Cocinero pueden sustituir correctamente a la clase base Empleado.
+
+ISP - Interface Segregation Principle
+
+Las interfaces fueron diseñadas con responsabilidades específicas evitando métodos innecesarios.
+
+DIP - Dependency Inversion Principle
+
+Los servicios dependen de abstracciones mediante interfaces y son resueltos usando Inyección de Dependencias.
 
 
