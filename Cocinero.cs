@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace TiendaPapas
+{
+    public class Cocinero : Empleado
+    {
+        public Cocinero(string nombre, int id) : base(nombre, id)
+        {
+        }
+        public void Trabajar(Recetas platillo)
+        {
+            Console.WriteLine($"el chef ya esta elaborando el platillo {platillo}");
+        }
+    }
+}
